@@ -33,7 +33,7 @@ export default function NavLinks() {
 						className={clsx(
 							"flex h-[64px] items-center justify-center gap-2 p-3 text-sm font-medium hover:bg-secondary hover:text-accent md:flex-none md:justify-start md:px-3 md:py-2",
 							{
-								"bg-[#e0aaff] text-accent":
+								"bg-[#e0e0e0] text-accent":
 									pathname === link.href,
 							},
 						)}

@@ -1,12 +1,12 @@
 "use client";
 
 import { LogOutIcon } from "lucide-react";
-import Link from "next/link";
 // import { UserAccountIcon } from "hugeicons-react";
 // import { useAppSelector } from "@/states/hook";
 import { useRouter } from "next/navigation";
 import NavLinks from "./nav-links";
-import Search from "./search";
+import Link from "next/link";
+import { UserAccountIcon } from "hugeicons-react";
 
 export default function TopNav() {
 
@@ -24,19 +24,31 @@ export default function TopNav() {
     };
 
     return (
-        <div className="mx-auto shadow-md">
-            <div className="grid h-16 grid-cols-3 items-center">
+        <div className="mx-auto shadow-md border-b border-gray-400">
+            {/* <div className="grid h-16 grid-cols-2 items-end"> */}
+            <div className="grid h-16 grid-cols-2 items-center">
 
-                {/* Search Column */}
-                <div className="flex justify-start px-5">
-                    <Search placeholder="Search..." />
-                </div>
 
                 {/* Navigation Links Column */}
-                <div className="flex justify-center">
+                {/* <div className="flex justify-center">
                     <NavLinks />
-                </div>
+                </div> */}
+                  <Link
+						// href={`/profile/${userId}`}
+                        href = "/home"
+						className="flex h-[64px] items-center justify-center gap-2 p-3 text-sm font-medium hover:bg-gray-300 hover:text-accent md:flex-none md:justify-start md:px-3 md:py-2"
+					>
+						<p className="block">Account</p>
+					</Link>
 
+                   {/* Profile */}
+                    {/* <Link
+						href={`/profile/${userId}`}
+						className="flex h-[64px] items-center justify-center gap-2 p-3 text-sm font-medium hover:bg-secondary hover:text-accent md:flex-none md:justify-start md:px-3 md:py-2"
+					>
+						<UserAccountIcon className="w-6" />
+						<p className="block">Account</p>
+					</Link> */}
                 {/* User Account Icon Column */}
                 <div className="flex justify-end pr-4">
                     {/* Profile */}
@@ -50,7 +62,7 @@ export default function TopNav() {
 
                     {/* Logout */}
                     <button
-                        className="flex h-[64px] items-center justify-center gap-2 p-3 text-sm font-medium hover:bg-secondary hover:text-accent md:flex-none md:justify-start md:px-3 md:py-2"
+                        className="flex h-[64px] items-center justify-center gap-2 p-3 text-sm font-medium hover:bg-gray-300 hover:text-accent md:flex-none md:justify-start md:px-3 md:py-2"
                         onClick={logout}
                     >
                         <LogOutIcon className="w-6" />
