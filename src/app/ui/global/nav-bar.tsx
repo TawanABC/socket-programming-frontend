@@ -21,13 +21,19 @@ export default function TopNav() {
         } catch (err) {
             console.error(err);
         }
-
     };
+    const handleRouterPush = async (path: string) => {
 
+        try {
+            router.push(path);
+        } catch (err) {
+            console.error(err);
+        }
+    };
     return (
         <div className="navbar bg-slate-200 border-b border-slate-50">
             <div className="flex-1">
-                <a className="btn btn-ghost text-xl">ChatRoom</a>
+                <a className="btn btn-ghost text-xl" onClick={() => handleRouterPush("/home")}>ChatRoom</a>
             </div>
             <div className="flex gap-2">
                 <div className="dropdown dropdown-end">
@@ -44,7 +50,8 @@ export default function TopNav() {
                         tabIndex={0}
                         className="menu menu-sm dropdown-content bg-slate-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
                         <li>
-                            <a className="justify-between">
+                            <a className="justify-between"
+                                onClick={() => handleRouterPush("/home/profile")}>
                                 Profile
                                 {/* <span className="badge">New</span> */}
                             </a>
