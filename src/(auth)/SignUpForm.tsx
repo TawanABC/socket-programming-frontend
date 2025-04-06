@@ -1,14 +1,23 @@
 import { signUpSchema } from '@/common/schemas';
 import * as yup from "yup";
-import React from 'react'
+import React, { useState } from 'react'
 import { ErrorMessage, Field, Form, Formik, FormikHelpers } from 'formik';
 import Link from 'next/link';
+import { FaEyeSlash, FaEye } from 'react-icons/fa';
 
 export default function SignUpForm() {
     type formSchema = yup.InferType<typeof signUpSchema>;
-
+    const [isError, setError] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setshowConfirmPassword] = useState(false)
+    const togglePassword = () => {
+        setShowPassword((prev) => !prev);
+    };
+    const toggleConfirmPassword = () => {
+        setshowConfirmPassword((prev) => !prev);
+    };
     const initialValues = {
-        username:"",
+        username: "",
         email: "",
         password: "",
         confirmPassword: ""
@@ -27,7 +36,7 @@ export default function SignUpForm() {
         }
     };
 
-    return(
+    return (
         <div className="flex min-h-screen items-center justify-center">
             <div className="m-auto w-full max-w-lg rounded-md bg-white p-6 shadow-sm">
                 <h1 className='flex flex-row text-3xl font-bold items-center justify-center'>Create new account</h1>
@@ -60,12 +69,12 @@ export default function SignUpForm() {
                             </div>
                             <div>
                                 <label className="mb-2 block text-sm font-bold text-gray-700">
-                                    Display name
+                                    Username
                                 </label>
                                 <Field
                                     type='text'
                                     name='username'
-                                    placeholder="Enter your display name"
+                                    placeholder="Enter your username"
                                     required
                                     className={`bg-white text-black input input-bordered border-blue-700 w-full ${errors.email && touched.email
                                         ? "input-error"
@@ -82,18 +91,34 @@ export default function SignUpForm() {
                                 <label className="mb-2 block text-sm font-bold text-gray-700">
                                     Password
                                 </label>
-                                <Field
-                                    type='password'
-                                    name='password'
-                                    placeholder='Enter your password'
-                                    required
-                                    className={`bg-white input input-bordered border-blue-700 w-full ${errors.email && touched.email
-                                        ? "input-error"
-                                        : "input-primary"
-                                        }`}
-                                />
+                                <div className='relative'>
+                                    <Field
+
+                                        type={
+                                            showPassword ? "text" : "password"
+                                        }
+                                        name='confirmPassword'
+                                        placeholder='Enter your password'
+                                        required
+                                        className={`bg-white input input-bordered border-blue-700 w-full ${errors.email && touched.email
+                                            ? "input-error"
+                                            : "input-primary"
+                                            }`}
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={togglePassword}
+                                        className="absolute right-3 top-1/2 -translate-y-1/2 transform"
+                                    >
+                                        {showPassword ? (
+                                            <FaEyeSlash />
+                                        ) : (
+                                            <FaEye />
+                                        )}
+                                    </button>
+                                </div>
                                 <ErrorMessage
-                                    name='password'
+                                    name='confirmPassword'
                                     component="p"
                                     className="text-xs text-red-500"
                                 />
@@ -101,20 +126,36 @@ export default function SignUpForm() {
 
                             <div>
                                 <label className="mb-2 block text-sm font-bold text-gray-700">
-                                    Confirm Password
+                                    Password
                                 </label>
-                                <Field
-                                    type='password'
-                                    name='confirmPassword'
-                                    placeholder='Confirm your password'
-                                    required
-                                    className={`bg-white input input-bordered border-blue-700 w-full ${errors.confirmPassword && touched.confirmPassword
-                                        ? "input-error"
-                                        : "input-primary"
-                                        }`}
-                                />
+                                <div className='relative'>
+                                    <Field
+
+                                        type={
+                                            showConfirmPassword ? "text" : "password"
+                                        }
+                                        name='password'
+                                        placeholder='Confirm your password'
+                                        required
+                                        className={`bg-white input input-bordered border-blue-700 w-full ${errors.email && touched.email
+                                            ? "input-error"
+                                            : "input-primary"
+                                            }`}
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={toggleConfirmPassword}
+                                        className="absolute right-3 top-1/2 -translate-y-1/2 transform"
+                                    >
+                                        {showConfirmPassword ? (
+                                            <FaEyeSlash />
+                                        ) : (
+                                            <FaEye />
+                                        )}
+                                    </button>
+                                </div>
                                 <ErrorMessage
-                                    name='confirmPassword'
+                                    name='password'
                                     component="p"
                                     className="text-xs text-red-500"
                                 />
@@ -132,7 +173,12 @@ export default function SignUpForm() {
                                     Sign Up
                                 </button>
                             </div>
-                            
+                            <div className='flex flex-row space-x-3'>
+                                <div>{`Already have an account?`}</div>
+                                <Link className='underline hover:cursor-pointer hover:text-blue-700'
+                                    href="/login"
+                                >Sign In</Link>
+                            </div>
                         </Form>
                     )}
                 </Formik>

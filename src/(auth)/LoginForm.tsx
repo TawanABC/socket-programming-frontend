@@ -1,11 +1,18 @@
 import { loginSchema } from '@/common/schemas';
 import * as yup from "yup";
-import React from 'react'
+import React, { useState } from 'react'
 import { ErrorMessage, Field, Form, Formik, FormikHelpers } from 'formik';
 import Link from 'next/link';
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 export default function LoginForm() {
     type formSchema = yup.InferType<typeof loginSchema>;
+
+    const [isError, setError] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
+    const togglePassword = () => {
+        setShowPassword((prev) => !prev);
+    };
 
     const loggedInUser = {
         email: "dummy@gmail.com",
@@ -40,6 +47,7 @@ export default function LoginForm() {
 
         } catch (err) {
             console.error(err);
+            setError(true);
         }
     };
 
@@ -79,16 +87,32 @@ export default function LoginForm() {
                                 <label className="mb-2 block text-sm font-bold text-gray-700">
                                     Password
                                 </label>
-                                <Field
-                                    type='password'
-                                    name='password'
-                                    placeholder='Enter your password'
-                                    required
-                                    className={`bg-white input input-bordered border-blue-700 w-full ${errors.email && touched.email
-                                        ? "input-error"
-                                        : "input-primary"
-                                        }`}
-                                />
+                                <div className='relative'>
+                                    <Field
+
+                                        type={
+                                            showPassword ? "text" : "password"
+                                        }
+                                        name='password'
+                                        placeholder='Enter your password'
+                                        required
+                                        className={`bg-white input input-bordered border-blue-700 w-full ${errors.email && touched.email
+                                            ? "input-error"
+                                            : "input-primary"
+                                            }`}
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={togglePassword}
+                                        className="absolute right-3 top-1/2 -translate-y-1/2 transform"
+                                    >
+                                        {showPassword ? (
+                                            <FaEyeSlash />
+                                        ) : (
+                                            <FaEye />
+                                        )}
+                                    </button>
+                                </div>
                                 <ErrorMessage
                                     name='password'
                                     component="p"
@@ -96,7 +120,11 @@ export default function LoginForm() {
                                 />
                             </div>
 
-
+                            {isError && (
+                                <span className="text-error">
+                                    Wrong email or password!
+                                </span>
+                            )}
                             <div className="flex items-center justify-center py-1">
                                 <button
                                     type="submit"
@@ -112,7 +140,7 @@ export default function LoginForm() {
                             <div className='flex flex-row space-x-3'>
                                 <div>{`Don't have an account?`}</div>
                                 <Link className='underline hover:cursor-pointer hover:text-blue-700'
-                                href="/signup"
+                                    href="/signup"
                                 >Sign Up</Link>
                             </div>
                         </Form>
