@@ -4,8 +4,19 @@ import React, { useState } from 'react'
 import { ErrorMessage, Field, Form, Formik, FormikHelpers } from 'formik';
 import Link from 'next/link';
 import { FaEyeSlash, FaEye } from 'react-icons/fa';
+import { useRouter } from 'next/navigation';
+import { useAppDispatch } from '@/states/hook';
+import { register } from '@/services/userService';
+import { User } from '@/common/model';
+import { login } from '@/states/features/authSlices';
+import { setUser } from '@/states/features/userSlice';
 
 export default function SignUpForm() {
+    const router = useRouter();
+    const dispatch = useAppDispatch();
+
+
+
     type formSchema = yup.InferType<typeof signUpSchema>;
     // const [isError, setError] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
@@ -30,7 +41,13 @@ export default function SignUpForm() {
     ) => {
         try {
             console.log(values);
-
+            const { confirmPassword, ...registerBody } = values;
+            console.log("reg body", registerBody);
+            const { user } = await register(registerBody) as unknown as { user: User };
+            // dispatch(login(token));
+            dispatch(setUser(user));
+            actions.resetForm();
+            router.push("/login");
         } catch (err) {
             console.error(err);
         }
