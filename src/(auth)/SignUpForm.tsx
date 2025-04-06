@@ -7,7 +7,7 @@ import { FaEyeSlash, FaEye } from 'react-icons/fa';
 
 export default function SignUpForm() {
     type formSchema = yup.InferType<typeof signUpSchema>;
-    const [isError, setError] = useState(false);
+    // const [isError, setError] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setshowConfirmPassword] = useState(false)
     const togglePassword = () => {
