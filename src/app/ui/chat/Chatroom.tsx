@@ -82,7 +82,7 @@ export default function ChatRoom() {
                 <img src={chattingWith.avatar} alt="avatar" className='w-8 h-8 rounded-full' />
                 <span className='font-semibold'>{chattingWith.name}</span>
             </div>
-
+            <>{loggedInUserId}</>
             {/* Message container */}
             <div
                 ref={containerRef}

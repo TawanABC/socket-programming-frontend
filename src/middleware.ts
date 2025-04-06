@@ -3,7 +3,7 @@ import type { NextRequest } from 'next/server';
 
 export function middleware(request: NextRequest) {
 
-    const token = request.cookies.get('authToken')?.value;
+    const token = request.cookies.get('token')?.value;
     console.log("middleware hello", token);
     console.log(request.cookies);
     if (!token) {
@@ -16,6 +16,6 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-    matcher: [],
-    // matcher: ['/home/:path*'],
+    // matcher: [],
+    matcher: ['/home/:path*'],
 };
