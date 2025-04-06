@@ -1,10 +1,13 @@
 import React, { useRef } from 'react'
 import ChatMessage from './ChatMessage'
 import { Message } from '@/common/model'
+import { useAppDispatch, useAppSelector } from '@/states/hook';
 
 export default function ChatRoom() {
     const containerRef = useRef<HTMLDivElement>(null)
-
+    const dispatch = useAppDispatch();
+    const loggedInUserId = useAppSelector(state => state.user.user!.userId);
+    console.log("login id", loggedInUserId);
     // Dummy name for the person you're chatting with
     const chattingWith = {
         id: "334",

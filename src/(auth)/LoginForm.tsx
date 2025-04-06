@@ -4,47 +4,47 @@ import React, { useState } from 'react'
 import { ErrorMessage, Field, Form, Formik, FormikHelpers } from 'formik';
 import Link from 'next/link';
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { useAppDispatch } from '@/states/hook';
+import { loginService } from '@/services/userService';
+import { login } from '@/states/features/authSlices';
+import { setUser } from '@/states/features/userSlice';
+import { useRouter } from "next/navigation";
 
 export default function LoginForm() {
     type formSchema = yup.InferType<typeof loginSchema>;
 
     const [isError, setError] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
+    const router = useRouter();
     const togglePassword = () => {
         setShowPassword((prev) => !prev);
     };
 
-    const loggedInUser = {
-        email: "dummy@gmail.com",
-        password: "abc1234"
-    }
+    // const loggedInUser = {
+    //     email: "dummy@gmail.com",
+    //     password: "abc1234"
+    // }
     const initialValues = {
         email: "",
         password: ""
     };
 
-
+    const dispatch = useAppDispatch();
     const handleSubmit = async (
         values: formSchema,
         actions: FormikHelpers<formSchema>,
     ) => {
         try {
             console.log(values);
-            // const data = {
-            //     ...values,
-            //     userId: loggedInUser?.userId,
-            // };
-
-            // const { user } = await updateUser({ user: data });
-
-            // dispatch(setUser(user));
-            // setShowSubmitPopup(true);
-            // setTimeout(() => {
-            //     setShowSubmitPopup(false);
-            // }, 3000);
-
-            // router.refresh();
-
+            const { user, token } = await loginService(values);
+            console.log("data after login", user, "token", token);
+            if (token) {
+                console.log("in token");
+                dispatch(login(token));
+                dispatch(setUser(user));
+                actions.resetForm();
+                router.push("/home");
+            }
         } catch (err) {
             console.error(err);
             setError(true);

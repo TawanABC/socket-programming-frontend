@@ -1,4 +1,6 @@
+import { loginSchema } from "@/common/model";
 import axios from "axios";
+
 
 const serverAddr = process.env.SERVER_ADDRESS;
 
@@ -9,9 +11,10 @@ export type registryData = {
 
 }
 
+
 export const register = async (registerData: registryData) => {
-    console.log("service", registerData);
-    console.log("server", serverAddr);
+    // console.log("service", registerData);
+    // console.log("server", serverAddr);
     try {
 
         const options = {
@@ -36,8 +39,8 @@ export const register = async (registerData: registryData) => {
 }
 
 
-export const loginService = async ({ email, password }: LoginSchema) => {
-
+export const loginService = async (loginData: loginSchema) => {
+    console.log("login service", loginData);
     try {
 
         const options = {
@@ -45,19 +48,23 @@ export const loginService = async ({ email, password }: LoginSchema) => {
             url: `${serverAddr}/auth/login`,
             headers: { "Content-Type": "application/json" },
             withCredentials: true,
-            data: {
-                email,
-                password,
-            },
+            data: loginData
         };
 
-        const { data: { user, token } } = await axios.request(options);
-
+        // const { data: { user, token } } = await axios.request(options);
+        const { data } = await axios.request(options);
+        console.log(data);
+        const user = {
+            userId: data.userId,
+            username: data.username,
+            email: data.email,
+            profileUrl: data.profileUrl
+        }
+        const token = data.token;
+        console.log("user = ", user);
         return {
-            user,
-            token,
-        };
-
+            user, token
+        }
     } catch (err) {
         throw err;
     }

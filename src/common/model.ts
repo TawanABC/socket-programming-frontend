@@ -19,3 +19,8 @@ export type ChatRoom = {
     isChatGroup: boolean;
     users: User[]
 }
+
+export type loginSchema = {
+    email: string;
+    password: string
+}

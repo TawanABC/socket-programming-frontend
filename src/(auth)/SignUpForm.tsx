@@ -16,7 +16,6 @@ export default function SignUpForm() {
     const dispatch = useAppDispatch();
 
 
-
     type formSchema = yup.InferType<typeof signUpSchema>;
     // const [isError, setError] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
@@ -45,7 +44,7 @@ export default function SignUpForm() {
             console.log("reg body", registerBody);
             const { user } = await register(registerBody) as unknown as { user: User };
             // dispatch(login(token));
-            dispatch(setUser(user));
+            // dispatch(setUser(user));
             actions.resetForm();
             router.push("/login");
         } catch (err) {
