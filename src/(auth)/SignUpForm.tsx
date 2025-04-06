@@ -10,7 +10,8 @@ export default function SignUpForm() {
     const initialValues = {
         username:"",
         email: "",
-        password: ""
+        password: "",
+        confirmPassword: ""
     };
 
 
