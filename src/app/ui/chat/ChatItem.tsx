@@ -8,11 +8,12 @@ export default function ChatItem({ chatRoom }: { chatRoom: ChatRoom }) {
     const userId = useAppSelector(state => state.user.user!.userId);
     const isChatGroup = chatRoom.isGroup
     const userIds = chatRoom.users
+    console.log("userId",userIds);
     const [otherUsername, setOtherUsername] = useState<string>('')
     useEffect(() => {
         const fetchOtherUsername = async () => {
             if (!isChatGroup) {
-                const otherUserId = userIds.find((otherId) => otherId !== userId).userId
+                const otherUserId = userIds.find((otherId) => otherId.userId !== userId).userId
                 if (otherUserId) {
                     try {
                         const userData = await getUserById(otherUserId)
