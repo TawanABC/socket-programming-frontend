@@ -1,49 +1,36 @@
-import React from 'react'
+import { SendIcon } from 'lucide-react';
+import React, { useState } from 'react';
 
 export default function ChatInput() {
+    const [message, setMessage] = useState("");
 
+    const handleSubmit = async () => {
+        try {
+            console.log("Submitted message:", message);
+            setMessage("")
+        } catch (error) {
+            console.log("send message error", error);
+        }
+
+    };
 
     return (
-        <div>
+        <div className='flex flex-row items-center space-x-2'>
+            <input
+                type="text"
+                className="input input-accent bg-white grow"
+                placeholder="Type here"
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+            />
 
-
-            <form
-                onSubmit={handleSubmit}
-                className="p-1 flex flex-row items-center gap-2 border-t border-gray-200"
+            <button
+                type="button" // Changed from submit to button to prevent accidental form submits
+                onClick={handleSubmit}
+                className='hover:bg-slate-200 p-2 rounded-md'
             >
-
-                {/* add button Section */}
-
-                <div>
-                    {/* Plus Icon with Options */}
-                    <div className="">
-                        <button
-                            onClick={() => setShowOptions(!showOptions)}
-                            type="button"
-                            className="p-2 rounded-full bg-gray-200 hover:bg-gray-300 transition-transform duration-300"
-                        >
-                            {showOptions ? <X size={20} className="transform rotate-180 transition-all duration-300" /> : <Plus size={20} className="transition-all duration-300" />}
-                        </button>
-                    </div>
-                </div>
-
-                {/* text input section */}
-                <input
-                    type="text"
-                    value={message}
-                    placeholder="Type your message..."
-                    onChange={(e) => setMessage(e.target.value)}
-                    className="input input-bordered input-primary w-full focus:ring-primary"
-                />
-                <button
-                    type="submit"
-                    className="ml-3 rounded-md bg-primary px-8 py-3 text-white hover:bg-accent 
-                            focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2"
-                >
-                    Send
-                </button>
-            </form>
-
+                <SendIcon />
+            </button>
         </div>
-    )
+    );
 }

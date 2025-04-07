@@ -2,12 +2,14 @@ import React, { useRef } from 'react'
 import ChatMessage from './ChatMessage'
 import { Message } from '@/common/model'
 import { useAppDispatch, useAppSelector } from '@/states/hook';
+import ChatInput from './ChatInput';
 
 export default function ChatRoom() {
     const containerRef = useRef<HTMLDivElement>(null)
     const dispatch = useAppDispatch();
     const loggedInUserId = useAppSelector(state => state.user.user!.userId);
-    console.log("login id", loggedInUserId);
+    const activeChatRoom = useAppSelector(state => state.chat.activeRoom);
+    console.log("login id", activeChatRoom);
     // Dummy name for the person you're chatting with
     const chattingWith = {
         id: "334",
@@ -92,6 +94,7 @@ export default function ChatRoom() {
                     <ChatMessage message={message} key={message.messageId} />
                 ))}
             </div>
+            <div className='flex flex-row justify-end p-2 space-x-1 shadow-2xl'>  <div className='grow'><ChatInput /></div> </div>
         </div>
     )
 }
