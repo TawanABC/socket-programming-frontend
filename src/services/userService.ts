@@ -70,3 +70,29 @@ export const loginService = async (loginData: loginSchema) => {
     }
 
 }
+
+
+export const getUserById = async (userId: string) => {
+    const options = {
+        method: "GET",
+        url: `${serverAddr}/users/${userId}`,
+        headers: { "Content-Type": "application/json" },
+        withCredentials: true,
+    };
+    const { data } = await axios.request(options);
+    return data;
+
+}
+
+export const getAllUsers = async () => {
+    const options = {
+        method: "GET",
+        url: `${serverAddr}/users`,
+        headers: { "Content-Type": "application/json" },
+        withCredentials: true,
+    };
+    const { data } = await axios.request(options);
+    const users = data.data
+    console.log("get all users",users);
+    return users;
+}

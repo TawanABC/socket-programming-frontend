@@ -1,4 +1,7 @@
-import React, { useState } from "react";
+import { createChatRoom } from "@/services/chatService";
+import { getAllUsers, getUserById } from "@/services/userService";
+import { useAppSelector } from "@/states/hook";
+import React, { useEffect, useState } from "react";
 
 type User = {
     userId: string;
@@ -7,44 +10,50 @@ type User = {
     profileUrl: string | "/avatar.png";
 };
 
-const users: User[] = [
-    {
-        userId: "1a2b3c",
-        username: "artlover21",
-        email: "artlover21@example.com",
-        profileUrl: "/avatar.png",
-    },
-    {
-        userId: "4d5e6f",
-        username: "creative_mind",
-        email: "creativemind@example.com",
-        profileUrl: "https://example.com/profiles/creative_mind.jpg",
-    },
-    {
-        userId: "7g8h9i",
-        username: "pixel_painter",
-        email: "pixelpainter@example.com",
-        profileUrl: "/avatar.png",
-    },
-];
-
 export default function CreatePrivateChat() {
+    const userId = useAppSelector(state => state.user.user!.userId);
+    const [users, setUsers] = useState<User[] | null>(null);
+
+    useEffect(() => {
+        const fetchAllUsers = async () => {
+            try {
+                const allUsers = await getAllUsers();
+                const filteredUsers = allUsers.filter((user: User) => user.userId !== userId);
+                setUsers(filteredUsers);
+            } catch (error) {
+                console.error("Error fetching users:", error);
+            }
+        };
+
+        fetchAllUsers();
+    }, [userId]);
+
+
     const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
 
-    const handleCreateChat = () => {
-        const selectedUser = users.find(user => user.userId === selectedUserId);
-        if (selectedUser) {
-            console.log("Creating private chat with:", selectedUser);
-        } else {
+    const handleCreateChat = async () => {
+        if (!selectedUserId) {
             console.log("No user selected.");
+            return;
+        }
+
+        try {
+            await createChatRoom({
+                userIds: [userId, selectedUserId],
+                isGroup: false,
+                groupName: "",
+            });
+        } catch (error) {
+            console.error("Error creating chat room:", error);
         }
     };
+
 
     return (
         <div className="p-4 space-y-4">
             <h2 className="text-xl font-bold">Select a user to chat with:</h2>
             <ul className="space-y-2">
-                {users.map((user) => (
+                {users && users.map((user) => (
                     <li key={user.userId} className="flex items-center space-x-2">
                         <input
                             type="radio"
@@ -55,7 +64,7 @@ export default function CreatePrivateChat() {
                         />
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
-                            src={user.profileUrl}
+                            src={user.profileUrl ? user.profileUrl : 'avatar.png'}
                             alt={user.username}
                             className="w-8 h-8 rounded-full object-cover"
                         />

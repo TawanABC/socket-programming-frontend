@@ -16,9 +16,21 @@ export type Message = {
 
 export type ChatRoom = {
     chatRoomId: string;
-    isChatGroup: boolean;
-    users: User[]
+    users: User[];
+    isGroup: string;
+    groupName: string;
 }
+
+// model ChatRoom {
+//     chatRoomId  String       @id @default(uuid()) @db.Uuid
+//     users       User[]       @relation(name: "UserChatRooms")
+//     messages    Message[]
+//     isGroup     Boolean      @default(false)
+//     groupName   String       @default("") @db.VarChar(1024)
+//     createdAt   DateTime     @default(now())
+//   }
+
+
 
 export type loginSchema = {
     email: string;

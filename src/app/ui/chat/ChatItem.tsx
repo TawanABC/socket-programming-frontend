@@ -2,9 +2,11 @@ import { ChatRoom } from '@/common/model'
 import React from 'react'
 
 export default function ChatItem({ chatRoom }: { chatRoom: ChatRoom }) {
-    const isChatGroup = chatRoom.isChatGroup
+    console.log("chatitem", chatRoom);
+    const isChatGroup = chatRoom.isGroup
+    console.log(isChatGroup);
     const users = chatRoom.users
-    const chatName = isChatGroup ? users[0].username : `${users[0].username} (${users.length})`
+    const chatName = isChatGroup ? `${users[0].username} (${users.length})` : users[0].userId
     return (
         <div
             className='flex items-center gap-3 p-2 rounded-lg hover:bg-slate-200 cursor-pointer transition'

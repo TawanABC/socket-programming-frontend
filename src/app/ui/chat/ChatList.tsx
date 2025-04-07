@@ -1,73 +1,40 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import ChatItem from './ChatItem'
 import { ChatRoom } from '@/common/model';
 import { PlusIcon } from 'lucide-react';
 import CreateChatModal from './CreateChatModal';
+import { useAppSelector, useAppDispatch } from '@/states/hook';
+import { setChatRooms } from '@/states/features/chatSlice';
+import { getUserChatRooms } from '@/services/chatService';
 
-const chatRooms: ChatRoom[] = [
-    {
-        chatRoomId: 'room-001',
-        isChatGroup: false,
-        users: [
-            {
-                userId: 'u-001',
-                username: 'Alice Johnson',
-                email: 'alice.johnson@email.com',
-                profileUrl: 'https://i.pravatar.cc/150?u=alice',
-            },
-            {
-                userId: 'u-002',
-                username: 'You',
-                email: 'you@email.com',
-                profileUrl: 'https://i.pravatar.cc/150?u=you',
-            },
-        ],
-    },
-    {
-        chatRoomId: 'room-002',
-        isChatGroup: false,
-        users: [
-            {
-                userId: 'u-003',
-                username: 'Bob Smith',
-                email: 'bob.smith@email.com',
-                profileUrl: 'https://i.pravatar.cc/150?u=bob',
-            },
-            {
-                userId: 'u-002',
-                username: 'You',
-                email: 'you@email.com',
-                profileUrl: 'https://i.pravatar.cc/150?u=you',
-            },
-        ],
-    },
-    {
-        chatRoomId: 'room-003',
-        isChatGroup: true,
-        users: [
-            {
-                userId: 'u-002',
-                username: 'You',
-                email: 'you@email.com',
-                profileUrl: 'https://i.pravatar.cc/150?u=you',
-            },
-            {
-                userId: 'u-004',
-                username: 'Charlie Tan',
-                email: 'charlie.tan@email.com',
-                profileUrl: 'https://i.pravatar.cc/150?u=charlie',
-            },
-            {
-                userId: 'u-005',
-                username: 'Dana Lee',
-                email: 'dana.lee@email.com',
-                profileUrl: 'https://i.pravatar.cc/150?u=dana',
-            },
-        ],
-    },
-];
 
 export default function ChatList() {
+
+    const userId = useAppSelector(state => state.user.user!.userId);
+    const chatRooms = useAppSelector(state => state.chat.chatRooms);
+    const dispatch = useAppDispatch();
+    const activeRoomId = useAppSelector(state => {
+        if (state.chat.activeRoom) {
+            return state.chat.activeRoom.chatRoomId;
+        }
+        return null;
+    });
+
+    useEffect(() => {
+        const fetchChatRooms = async () => {
+            console.log("fetching...");
+            try {
+                const chatRooms = await getUserChatRooms();
+                dispatch(setChatRooms(chatRooms));
+            } catch (error) {
+                console.error("Failed to fetch chat rooms:", error);
+            }
+        };
+        console.log("chat lsit", chatRooms);
+        fetchChatRooms();
+    }, []);
+
+
     const openModal = (modalId: string) => {
         (document.getElementById(modalId) as HTMLDialogElement)?.close();
         (
