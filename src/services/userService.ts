@@ -13,8 +13,6 @@ export type registryData = {
 
 
 export const register = async (registerData: registryData) => {
-    // console.log("service", registerData);
-    // console.log("server", serverAddr);
     try {
 
         const options = {
@@ -73,14 +71,22 @@ export const loginService = async (loginData: loginSchema) => {
 
 
 export const getUserById = async (userId: string) => {
-    const options = {
-        method: "GET",
-        url: `${serverAddr}/users/${userId}`,
-        headers: { "Content-Type": "application/json" },
-        withCredentials: true,
-    };
-    const { data } = await axios.request(options);
-    return data;
+    // console.log('get by id', userId);
+    try {
+        const options = {
+            method: "GET",
+            url: `${serverAddr}/users/${userId}`,
+            headers: { "Content-Type": "application/json" },
+            withCredentials: true,
+        };
+        const { data } = await axios.request(options);
+        const user = data.data
+        console.log("get user by id", user);
+        return user;
+    } catch (error) {
+        throw error;
+    }
+
 
 }
 
@@ -93,6 +99,6 @@ export const getAllUsers = async () => {
     };
     const { data } = await axios.request(options);
     const users = data.data
-    console.log("get all users",users);
+    console.log("get all users", users);
     return users;
 }

@@ -1,4 +1,7 @@
-import React, { useState } from "react";
+import { createChatRoom } from "@/services/chatService";
+import { getAllUsers } from "@/services/userService";
+import { useAppSelector } from "@/states/hook";
+import React, { useEffect, useState } from "react";
 
 type User = {
   userId: string;
@@ -7,28 +10,27 @@ type User = {
   profileUrl: string | "/avatar.png";
 };
 
-const users: User[] = [
-  {
-    userId: "1a2b3c",
-    username: "artlover21",
-    email: "artlover21@example.com",
-    profileUrl: "/avatar.png",
-  },
-  {
-    userId: "4d5e6f",
-    username: "creative_mind",
-    email: "creativemind@example.com",
-    profileUrl: "https://example.com/profiles/creative_mind.jpg",
-  },
-  {
-    userId: "7g8h9i",
-    username: "pixel_painter",
-    email: "pixelpainter@example.com",
-    profileUrl: "/avatar.png",
-  },
-];
 
 export default function CreateGroupChat() {
+  const userId = useAppSelector(state => state.user.user!.userId);
+  const [users, setUsers] = useState<User[] | null>(null);
+
+  useEffect(() => {
+    const fetchAllUsers = async () => {
+      try {
+        const allUsers = await getAllUsers();
+        const filteredUsers = allUsers.filter((user: User) => user.userId !== userId);
+        setUsers(filteredUsers);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
+    };
+
+    fetchAllUsers();
+  }, [userId]);
+
+
+
   const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
   const [groupName, setGroupName] = useState<string>("");
 
@@ -40,9 +42,9 @@ export default function CreateGroupChat() {
     );
   };
 
-  const handleCreateGroupChat = () => {
-    const selectedUsers = users.filter((user) =>
-      selectedUserIds.includes(user.userId)
+  const handleCreateGroupChat = async () => {
+    const selectedUsers = users?.filter((user) =>
+      selectedUserIds?.includes(user.userId)
     );
 
     if (!groupName.trim()) {
@@ -50,14 +52,26 @@ export default function CreateGroupChat() {
       return;
     }
 
-    if (selectedUsers.length < 1) {
+    if (selectedUsers && selectedUsers.length < 1) {
       console.log("Please select at least two users for a group chat.");
       return;
     }
-
-    console.log("Creating group chat:");
-    console.log("Group Name:", groupName);
-    console.log("Members:", selectedUsers);
+    console.log("selected users", selectedUsers);
+    console.log(userId);
+    const allUserIds = [...selectedUsers.map(user => user.userId), userId];
+    console.log(allUserIds);
+    try {
+      console.log("Creating group chat:");
+      console.log("Group Name:", groupName);
+      console.log("Members:", selectedUsers);
+      await createChatRoom({
+        userIds: allUserIds,
+        isGroup: true,
+        groupName: groupName,
+      });
+    } catch (error) {
+      console.error("Error creating chat room:", error);
+    }
   };
 
   return (
@@ -78,7 +92,7 @@ export default function CreateGroupChat() {
       <div>
         <label className="block text-sm font-medium mb-2">Select Members:</label>
         <ul className="space-y-2">
-          {users.map((user) => (
+          {users && users.map((user) => (
             <li key={user.userId} className="flex items-center space-x-2">
               <input
                 type="checkbox"
@@ -87,7 +101,7 @@ export default function CreateGroupChat() {
               />
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src={user.profileUrl}
+                src={user.profileUrl && user.profileUrl !== "" ? user.profileUrl : "/avatar.png"}
                 alt={user.username}
                 className="w-8 h-8 rounded-full object-cover"
               />

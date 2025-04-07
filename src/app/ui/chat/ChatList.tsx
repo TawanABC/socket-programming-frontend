@@ -22,7 +22,7 @@ export default function ChatList() {
 
     useEffect(() => {
         const fetchChatRooms = async () => {
-            console.log("fetching...");
+            // console.log("fetching...");
             try {
                 const chatRooms = await getUserChatRooms();
                 dispatch(setChatRooms(chatRooms));

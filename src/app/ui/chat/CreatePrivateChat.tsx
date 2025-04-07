@@ -1,5 +1,5 @@
 import { createChatRoom } from "@/services/chatService";
-import { getAllUsers, getUserById } from "@/services/userService";
+import { getAllUsers } from "@/services/userService";
 import { useAppSelector } from "@/states/hook";
 import React, { useEffect, useState } from "react";
 

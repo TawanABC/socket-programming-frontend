@@ -16,7 +16,7 @@ export type Message = {
 
 export type ChatRoom = {
     chatRoomId: string;
-    users: User[];
+    users: string[];
     isGroup: string;
     groupName: string;
 }
