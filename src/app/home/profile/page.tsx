@@ -1,7 +1,6 @@
 'use client'
 import { useRef, useState } from 'react'
 import { Pencil } from 'lucide-react'
-import Image from 'next/image'
 
 export default function ProfilePage() {
   const dummyuser = {

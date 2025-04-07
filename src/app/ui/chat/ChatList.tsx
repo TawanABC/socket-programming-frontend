@@ -1,6 +1,8 @@
 import React from 'react'
 import ChatItem from './ChatItem'
 import { ChatRoom } from '@/common/model';
+import { PlusIcon } from 'lucide-react';
+import CreateChatModal from './CreateChatModal';
 
 const chatRooms: ChatRoom[] = [
     {
@@ -65,14 +67,29 @@ const chatRooms: ChatRoom[] = [
     },
 ];
 
-
 export default function ChatList() {
-    return (
+    const openModal = (modalId: string) => {
+        (document.getElementById(modalId) as HTMLDialogElement)?.close();
+        (
+            document.getElementById(modalId) as HTMLDialogElement
+        )?.showModal();
+    }
+    return (<>
         <div className='w-[300px] bg-slate-50 p-3 overflow-y-auto'>
-            <h2 className='text-xl font-bold mb-4'>Chats</h2>
+            <div className='flex flex-row items-center justify-between'>
+                <h2 className='text-xl font-bold'>Chats</h2>
+                <button type="button" className='hover:bg-slate-200 hover:cursor-pointer p-1 rounded-md'
+                    onClick={() => openModal('createChatModal')}>
+                    <PlusIcon />
+                </button>
+            </div>
             {chatRooms.map(chatRoom => (
                 <ChatItem chatRoom={chatRoom} key={`chat-item-${chatRoom.chatRoomId}`} />
             ))}
         </div>
+
+        <CreateChatModal modalId='createChatModal' />
+    </>
+
     )
 }

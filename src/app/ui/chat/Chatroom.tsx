@@ -7,7 +7,7 @@ import ChatInput from './ChatInput';
 export default function ChatRoom() {
     const containerRef = useRef<HTMLDivElement>(null)
     const dispatch = useAppDispatch();
-    const loggedInUserId = useAppSelector(state => state.user.user!.userId);
+    const loggedInUserId = useAppSelector(state => state.user.user?.userId);
     const activeChatRoom = useAppSelector(state => state.chat.activeRoom);
     console.log("login id", activeChatRoom);
     // Dummy name for the person you're chatting with
