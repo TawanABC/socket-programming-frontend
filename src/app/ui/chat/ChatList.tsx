@@ -30,7 +30,7 @@ export default function ChatList() {
                 console.error("Failed to fetch chat rooms:", error);
             }
         };
-        console.log("chat lsit", chatRooms);
+        // console.log("chat lsit", chatRooms);
         fetchChatRooms();
     }, []);
 

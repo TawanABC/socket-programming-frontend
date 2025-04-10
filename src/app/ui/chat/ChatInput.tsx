@@ -1,12 +1,28 @@
+import { createMessage } from '@/services/chatService';
+import { useAppDispatch, useAppSelector } from '@/states/hook';
 import { SendIcon } from 'lucide-react';
 import React, { useState } from 'react';
 
 export default function ChatInput() {
-    const [message, setMessage] = useState("");
+    const dispatch = useAppDispatch();
+
+    const activeChatRoomId = useAppSelector(state => {
+        if (state.chat.activeRoom) {
+            return state.chat.activeRoom.chatRoomId;
+        }
+        return null;
+    });
+    const [message, setMessage] = useState<string>("");
 
     const handleSubmit = async () => {
         try {
             console.log("Submitted message:", message);
+            const response = await createMessage({
+                chatRoomId: activeChatRoomId!,
+                content: message,
+                messageType: "MESSAGE"
+            })
+            // console.log(response);
             setMessage("")
         } catch (error) {
             console.log("send message error", error);

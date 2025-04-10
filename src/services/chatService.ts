@@ -37,7 +37,6 @@ export const getUserChatRooms = async () => {
             withCredentials: true,
         };
         const { data } = await axios.request(options);
-        console.log(data);
         const chatRooms = data.chatRooms
         console.log("get user chatrooms", chatRooms);
         return chatRooms;
@@ -93,28 +92,29 @@ export const getChatRoomDetails = async (chatRoomId: string) => {
             withCredentials: true,
         };
         const { data } = await axios.request(options);
-        const chatroom = data.chatRoom;
+        const chatroom = data.data;
+        console.log("get detail", chatroom);
         return chatroom;
-    /*
-    chatRoom: {
-        users: {
-            userId: string;
-            username: string;
-        }[];
-        messages: {
-            chatRoomId: string;
-            createdAt: Date;
-            messageId: string;
-            senderId: string;
-            messageType: $Enums.MessageType;
-            isEdited: boolean;
-            isUnsent: boolean;
-            content: string;
-        }[];
-    } & {
-        ...;
-    }
-    */
+        /*
+        chatRoom: {
+            users: {
+                userId: string;
+                username: string;
+            }[];
+            messages: {
+                chatRoomId: string;
+                createdAt: Date;
+                messageId: string;
+                senderId: string;
+                messageType: $Enums.MessageType;
+                isEdited: boolean;
+                isUnsent: boolean;
+                content: string;
+            }[];
+        } & {
+            ...;
+        }
+        */
     } catch (error) {
         throw error;
     }

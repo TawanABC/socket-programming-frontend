@@ -1,15 +1,23 @@
 import { ChatRoom } from '@/common/model'
 import { getUserById } from '@/services/userService';
-import { useAppSelector } from '@/states/hook';
+import { setActiveRoom } from '@/states/features/chatSlice';
+import { useAppDispatch, useAppSelector } from '@/states/hook';
 import React, { useEffect, useState } from 'react'
 
 export default function ChatItem({ chatRoom }: { chatRoom: ChatRoom }) {
+    const dispatch = useAppDispatch();
 
     const userId = useAppSelector(state => state.user.user!.userId);
     const isChatGroup = chatRoom.isGroup
     const userIds = chatRoom.users
-    console.log("userId",userIds);
     const [otherUsername, setOtherUsername] = useState<string>('')
+
+    const handleSetActiveRoom = async () => {
+        dispatch(setActiveRoom(chatRoom))
+    }
+
+
+
     useEffect(() => {
         const fetchOtherUsername = async () => {
             if (!isChatGroup) {
@@ -35,6 +43,7 @@ export default function ChatItem({ chatRoom }: { chatRoom: ChatRoom }) {
     return (
         <div
             className='flex items-center gap-3 p-2 rounded-lg hover:bg-slate-200 cursor-pointer transition'
+            onClick={handleSetActiveRoom}
         >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={isChatGroup ? "/group_chat.png" : "/group_chat.png"} alt="profile" className='w-10 h-10 rounded-full' />

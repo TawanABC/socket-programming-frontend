@@ -1,4 +1,5 @@
 import { Message } from '@/common/model'
+import { useAppSelector } from '@/states/hook';
 import clsx from 'clsx';
 import React from 'react'
 interface messageProps {
@@ -6,10 +7,7 @@ interface messageProps {
 }
 
 export default function ChatMessage({ message }: messageProps) {
-    const userId = "111"
-    // const userId = useAppSelector(state => state.user.user!.userId);
-    // const loggedInUser = useAppSelector(state => state.user.user);
-    // const receiver = useAppSelector(state => state.chat.activeReceiver);
+    const userId = useAppSelector(state => state.user.user!.userId);
     const isMyMessage = message.senderId === userId;
     return (
         <div className={clsx(`chat`, {

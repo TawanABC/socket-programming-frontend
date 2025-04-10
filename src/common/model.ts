@@ -10,25 +10,37 @@ export type Message = {
     messageId: string;
     chatRoomId: string;
     senderId: string;
+    messageType: string;
+    isEdited: boolean;
+    isUnsent: boolean;
     content: string;
     createdAt: string;
 }
 
+// model Message {
+//     messageId   String      @id @default(uuid())
+//     chatRoomId  String      @db.Uuid
+//     senderId    String      @db.Uuid
+//     messageType MessageType
+//     isEdited    Boolean     @default(false)
+//     isUnsent    Boolean     @default(false)
+//     content     String
+//     createdAt   DateTime    @default(now())
+
+//     chatRoom    ChatRoom    @relation(fields: [chatRoomId], references: [chatRoomId])
+//     sender      User        @relation(fields: [senderId], references: [userId])
+//   }
+
 export type ChatRoom = {
     chatRoomId: string;
-    users: string[];
+    users: User[];
+    messages: Message[];
     isGroup: string;
     groupName: string;
+    createdAt: string;
 }
 
-// model ChatRoom {
-//     chatRoomId  String       @id @default(uuid()) @db.Uuid
-//     users       User[]       @relation(name: "UserChatRooms")
-//     messages    Message[]
-//     isGroup     Boolean      @default(false)
-//     groupName   String       @default("") @db.VarChar(1024)
-//     createdAt   DateTime     @default(now())
-//   }
+
 
 
 
