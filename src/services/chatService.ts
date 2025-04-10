@@ -220,3 +220,35 @@ export const getAllGroupChatRooms = async () => {
         throw error;
     }
 };
+
+export const updateMessage = async ({ messageId, newContent }: { messageId: string, newContent: string }) => {
+    try {
+        const data = {
+            content: newContent
+        };
+        const options = {
+            method: "PUT",
+            url: `${serverAddr}/chat/message/${messageId}/update`,
+            headers: { "Content-Type": "application/json" },
+            withCredentials: true,
+            data: data,
+        };
+        const response = await axios.request(options);
+        const updatedMessage = response.data.updatedMessage;
+        return updatedMessage;
+        /*
+        updatedMessage: {
+            chatRoomId: string;
+            createdAt: Date;
+            messageId: string;
+            senderId: string;
+            messageType: $Enums.MessageType;
+            isEdited: boolean;
+            isUnsent: boolean;
+            content: string;
+        }
+        */
+    } catch (error) {
+        throw error;
+    }
+};
