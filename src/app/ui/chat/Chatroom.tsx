@@ -1,11 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react'
 import ChatMessage from './ChatMessage'
-import { Message } from '@/common/model'
 import { useAppDispatch, useAppSelector } from '@/states/hook';
 import ChatInput from './ChatInput';
 import { getUserById } from '@/services/userService';
 import { io } from "socket.io-client";
-import { addMessage, setActiveRoom, setMessages } from '@/states/features/chatSlice';
+import { setActiveRoom } from '@/states/features/chatSlice';
 import { getChatRoomDetails } from '@/services/chatService';
 
 const socket = io(process.env.SERVER_ADDRESS);
@@ -17,34 +16,18 @@ export default function ChatRoom() {
     const loggedInUserId = useAppSelector(state => state.user.user?.userId);
     const activeChatRoom = useAppSelector(state => state.chat.activeRoom);
     const activeRoomId = activeChatRoom?.chatRoomId
-    const messages = useAppSelector((state) => state.chat.messages);
 
-    // console.log("active room", activeChatRoom);
 
     const userId = useAppSelector(state => state.user.user!.userId);
     const isChatGroup = activeChatRoom?.isGroup
     const userIds = activeChatRoom?.users
-    // console.log("userIdssss", userIds);
+
     const [otherUsername, setOtherUsername] = useState<string>('')
 
-
-    useEffect(() => {
-        // Fetch messages from backend
-        const fetchMessageChatroom = async () => {
-            if (activeRoomId !== undefined) {
-                const chatRoomDetails = await getChatRoomDetails(activeRoomId);
-                console.log("room details", chatRoomDetails);
-                dispatch(setMessages(chatRoomDetails.messages));
-                console.log("msg", chatRoomDetails.messages, messages);
-
-            }
-        };
-
-        fetchMessageChatroom();
-    }, [activeChatRoom]);
-
-
-
+    const [buttonClicked, setButtonClicked] = useState(false);
+    const handleChatInputButtonClick = () => {
+        setButtonClicked(prev => !prev);
+    };
 
 
     useEffect(() => {
@@ -72,11 +55,9 @@ export default function ChatRoom() {
 
     useEffect(() => {
         const fetchMessageChatroom = async () => {
-            console.log("fetcherss");
             if (activeRoomId !== undefined) {
                 const chatRoomDetails = await getChatRoomDetails(activeRoomId);
                 dispatch(setActiveRoom(chatRoomDetails))
-                console.log("chatroom det", chatRoomDetails);
             }
         };
 
@@ -106,19 +87,19 @@ export default function ChatRoom() {
         : otherUsername || 'Loading...'
 
     useEffect(() => {
-        console.log("use effect", activeChatRoom?.messages);
-        if (containerRef.current) {
-            // console.log(`Scrolling to ${containerRef.current.scrollHeight}`);
-            containerRef.current.scrollTop = containerRef.current.scrollHeight;
-        }
-    }, [activeChatRoom?.messages]);
+        const timer = setTimeout(() => {
+            if (containerRef.current) {
+                containerRef.current.scrollTop = containerRef.current.scrollHeight;
+            }
+        }, 50); // 200ms delay
+
+        return () => clearTimeout(timer); // Clean up the timer when the component unmounts or re-runs
+    }, [buttonClicked]);
 
     return (
         <div className='max-h-[500px] h-[500px] border border-gray-300 flex flex-col'>
-            {/* Top bar showing who you're chatting with */}
             <div className='flex items-center gap-2 bg-gray-600 text-white px-3 py-2 w-full'>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                {/* <img src={chattingWith.avatar} alt="avatar" className='w-8 h-8 rounded-full' /> */}
+
                 <span className='font-semibold'>{chatName}</span>
             </div>
             <>{loggedInUserId}</>
@@ -131,7 +112,7 @@ export default function ChatRoom() {
                     <ChatMessage message={message} key={message.messageId} />
                 ))}
             </div>
-            <div className='flex flex-row justify-end p-2 space-x-1 shadow-2xl'>  <div className='grow'><ChatInput /></div> </div>
+            <div className='flex flex-row justify-end p-2 space-x-1 shadow-2xl'>  <div className='grow'><ChatInput onButtonClick={handleChatInputButtonClick} /></div> </div>
         </div>
     )
 }

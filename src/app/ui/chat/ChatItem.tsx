@@ -1,4 +1,5 @@
 import { ChatRoom } from '@/common/model'
+import { getChatRoomDetails } from '@/services/chatService';
 import { getUserById } from '@/services/userService';
 import { setActiveRoom } from '@/states/features/chatSlice';
 import { useAppDispatch, useAppSelector } from '@/states/hook';
@@ -14,6 +15,8 @@ export default function ChatItem({ chatRoom }: { chatRoom: ChatRoom }) {
 
     const handleSetActiveRoom = async () => {
         dispatch(setActiveRoom(chatRoom))
+        const chatRoomDetails = await getChatRoomDetails(chatRoom.chatRoomId);
+        dispatch(setActiveRoom(chatRoomDetails))
     }
 
 

@@ -1,10 +1,14 @@
 import { createMessage } from '@/services/chatService';
-import { useAppDispatch, useAppSelector } from '@/states/hook';
+import { useAppSelector } from '@/states/hook';
 import { SendIcon } from 'lucide-react';
 import React, { useState } from 'react';
 
-export default function ChatInput() {
-    const dispatch = useAppDispatch();
+type ChatInputProps = {
+    onButtonClick?: () => void;
+};
+
+
+export default function ChatInput({ onButtonClick }: ChatInputProps) {
 
     const activeChatRoomId = useAppSelector(state => {
         if (state.chat.activeRoom) {
@@ -13,7 +17,6 @@ export default function ChatInput() {
         return null;
     });
     const [message, setMessage] = useState<string>("");
-
     const handleSubmit = async () => {
         try {
             console.log("Submitted message:", message);
@@ -24,6 +27,7 @@ export default function ChatInput() {
             })
             // console.log(response);
             setMessage("")
+            if (onButtonClick) onButtonClick();
         } catch (error) {
             console.log("send message error", error);
         }
