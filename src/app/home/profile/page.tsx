@@ -2,9 +2,9 @@
 import { useEffect, useState } from 'react'
 import { Pencil } from 'lucide-react'
 import clsx from 'clsx'
-
-// import { useAppDispatch, useAppSelector } from "@/states/hook";
-
+import { updateProfile } from '@/services/profileService'
+import { useAppDispatch, useAppSelector } from "@/states/hook";
+import { getUserById } from '@/services/userService'
 
 const availableImages = [
   '/avatars/avatar1.jpg',
@@ -22,13 +22,19 @@ export default function ProfilePage() {
   const [editingName, setEditingName] = useState(false)
   const [name, setName] = useState("Ye")
   const [tempName, setTempName] = useState("")
+  const userId = useAppSelector((state) => state.user.user?.userId);
 
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        //api
-        setName("Yee")
-        setImageSrc('/avatars/avatar6.jpg')
+        if(userId){
+          const current=await getUserById(userId)
+          setName(current.username)
+          setImageSrc(current.profileUrl)
+        }
+        else{
+          console.log('no userId')
+        }
       } catch (err) {
         console.error(err)
       } finally {
@@ -42,8 +48,9 @@ export default function ProfilePage() {
   const handleSaveName = async () => {
     setName(tempName)
     setEditingName(false)
-
-    //api
+    if(userId){
+      await updateProfile({userId:userId,username:tempName,profileUrl:null})
+    }
   }
 
 
@@ -56,9 +63,11 @@ export default function ProfilePage() {
 
     try {
       setUploading(true)
-      console.log('upload')
+      console.log('pic changed')
       console.log(imgUrl)
-      //api
+      if(userId){
+        await updateProfile({userId:userId,username:null,profileUrl:imgUrl})
+      }
     } catch (err) {
       console.error(err)
     } finally {
