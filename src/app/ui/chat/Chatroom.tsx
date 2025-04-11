@@ -29,10 +29,14 @@ export default function ChatRoom() {
         setButtonClicked(prev => !prev);
     };
 
-
+    //go directly to most rececnt message upon opening
+    if (containerRef.current) {
+        containerRef.current.scrollTop = containerRef.current.scrollHeight;
+    }
+    
     useEffect(() => {
         const fetchOtherUsername = async () => {
-            if (!isChatGroup) {
+            if (!isChatGroup && activeChatRoom) {
                 const otherUserId = userIds.find((otherId) => otherId.userId !== userId).userId
                 if (otherUserId) {
                     try {
@@ -69,7 +73,7 @@ export default function ChatRoom() {
 
         socket.on("receiveMessage", ({ newMessage }) => {
             // const { commission, ...rest } = newMessage;
-            console.log("socketssss", newMessage);
+            // console.log("socket", newMessage);
             fetchMessageChatroom()
         });
 
@@ -84,7 +88,7 @@ export default function ChatRoom() {
 
     const chatName = isChatGroup
         ? `${activeChatRoom.groupName} (${userIds.length})`
-        : otherUsername || 'Loading...'
+        : otherUsername || 'Please Select ChatRoom'
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -102,7 +106,6 @@ export default function ChatRoom() {
 
                 <span className='font-semibold'>{chatName}</span>
             </div>
-            <>{loggedInUserId}</>
             {/* Message container */}
             <div
                 ref={containerRef}
@@ -112,7 +115,11 @@ export default function ChatRoom() {
                     <ChatMessage message={message} key={message.messageId} />
                 ))}
             </div>
-            <div className='flex flex-row justify-end p-2 space-x-1 shadow-2xl'>  <div className='grow'><ChatInput onButtonClick={handleChatInputButtonClick} /></div> </div>
+            {activeChatRoom &&
+                <div className='flex flex-row justify-end p-2 space-x-1 shadow-2xl'>  <div className='grow'><ChatInput onButtonClick={handleChatInputButtonClick} /></div> </div>
+            }
+
+
         </div>
     )
 }
