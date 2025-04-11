@@ -1,4 +1,4 @@
-import { ChatRoom } from '@/common/model'
+import { ChatRoom, User } from '@/common/model'
 import { getChatRoomDetails } from '@/services/chatService';
 import { getUserById } from '@/services/userService';
 import { setActiveRoom } from '@/states/features/chatSlice';
@@ -12,7 +12,9 @@ export default function ChatItem({ chatRoom }: { chatRoom: ChatRoom }) {
     const isChatGroup = chatRoom.isGroup
     const userIds = chatRoom.users
     const [otherUsername, setOtherUsername] = useState<string>('')
-
+    const [otherUser, setOtherUser] = useState<User | null>(null);
+    const otherUserUrl = (!otherUser || otherUser?.profileUrl === "") ? 'avatar.png' : otherUser?.profileUrl
+    const chatIcon = isChatGroup ? "/group_chat.png" : otherUserUrl
     const handleSetActiveRoom = async () => {
         dispatch(setActiveRoom(chatRoom))
         const chatRoomDetails = await getChatRoomDetails(chatRoom.chatRoomId);
@@ -29,6 +31,7 @@ export default function ChatItem({ chatRoom }: { chatRoom: ChatRoom }) {
                     try {
                         const userData = await getUserById(otherUserId)
                         console.log(userData);
+                        setOtherUser(userData);
                         setOtherUsername(userData.username || 'Unknown User')
                     } catch (err) {
                         console.error('Failed to fetch user:', err)
@@ -49,7 +52,7 @@ export default function ChatItem({ chatRoom }: { chatRoom: ChatRoom }) {
             onClick={handleSetActiveRoom}
         >
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={isChatGroup ? "/group_chat.png" : "/group_chat.png"} alt="profile" className='w-10 h-10 rounded-full' />
+            <img src={chatIcon} alt="profile" className='w-10 h-10 rounded-full' />
             <div className='flex-1'>
                 <div className='flex justify-between'>
                     <span className='font-medium'>{chatName}</span>

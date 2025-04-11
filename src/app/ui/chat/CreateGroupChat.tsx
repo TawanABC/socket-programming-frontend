@@ -10,10 +10,14 @@ type User = {
   profileUrl: string | "/avatar.png";
 };
 
+interface createChatProp {
+  closeModal?: () => void;
+};
 
-export default function CreateGroupChat() {
+export default function CreateGroupChat({ closeModal }: createChatProp) {
   const userId = useAppSelector(state => state.user.user!.userId);
   const [users, setUsers] = useState<User[] | null>(null);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     const fetchAllUsers = async () => {
@@ -48,11 +52,13 @@ export default function CreateGroupChat() {
     );
 
     if (!groupName.trim()) {
+      setError(true);
       console.log("Please enter a group name.");
       return;
     }
 
     if (selectedUsers && selectedUsers.length < 1) {
+      setError(true);
       console.log("Please select at least two users for a group chat.");
       return;
     }
@@ -69,6 +75,10 @@ export default function CreateGroupChat() {
         isGroup: true,
         groupName: groupName,
       });
+      if (closeModal) closeModal();
+      setError(false)
+      setGroupName("");
+      setSelectedUserIds([]);
     } catch (error) {
       console.error("Error creating chat room:", error);
     }
@@ -110,10 +120,10 @@ export default function CreateGroupChat() {
           ))}
         </ul>
       </div>
-
+      {error && <div className="text-error">Group Name must be entered and at least one user must be selected</div>}
       <button
         onClick={handleCreateGroupChat}
-        className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+        className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
       >
         Create Group Chat
       </button>

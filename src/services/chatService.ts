@@ -137,28 +137,8 @@ export const addUserToChatRoom = async ({ chatRoomId, newUserId }: {
             data: data,
         };
         const response = await axios.request(options);
-        const updatedChatRoom = response.data.updatedChatRoom;
-        return updatedChatRoom;
-        /*
-        updatedChatRoom: {
-            users: {
-                userId: string;
-                username: string;
-            }[];
-            messages: {
-                chatRoomId: string;
-                createdAt: Date;
-                messageId: string;
-                senderId: string;
-                messageType: $Enums.MessageType;
-                isEdited: boolean;
-                isUnsent: boolean;
-                content: string;
-            }[];
-        } & {
-            ...;
-        }
-        */
+        return response.data
+
     } catch (error) {
         throw error;
     }
@@ -173,9 +153,11 @@ export const unsendMessage = async (messageId: string) => {
             headers: { "Content-Type": "application/json" },
             withCredentials: true,
         };
-        const response = await axios.request(options);
-        const updatedMessage = response.data.unsentMessage;
-        return updatedMessage;
+        const { data } = await axios.request(options);
+        const unsentMessage = data.data;
+        console.log("unsend service", unsentMessage);
+        // const updatedMessage = 
+        // return updatedMessage;
         /*
         unsentMessage: {
         chatRoomId: string;
@@ -202,20 +184,10 @@ export const getAllGroupChatRooms = async () => {
             headers: { "Content-Type": "application/json" },
             withCredentials: true,
         };
-        const response = await axios.request(options);
-        const groupChatRooms = response.data.groupChatRooms;
-        return groupChatRooms;
-        /*
-        const groupChatRooms: {
-        chatRoomId: string;
-        groupName: string;
-        createdAt: Date;
-        users: {
-            userId: string;
-            username: string;
-            }[];
-        }[]
-        */
+        const { data } = await axios.request(options);
+        const chatGroups = data.data
+        // console.log("getall g",chatGroups);
+        return chatGroups
     } catch (error) {
         throw error;
     }
