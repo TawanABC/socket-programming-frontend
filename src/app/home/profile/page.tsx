@@ -5,6 +5,7 @@ import clsx from 'clsx'
 import { updateProfile } from '@/services/profileService'
 import { useAppDispatch, useAppSelector } from "@/states/hook";
 import { getUserById } from '@/services/userService'
+import { setUser } from '@/states/features/userSlice'
 
 const availableImages = [
   '/avatars/avatar1.jpg',
@@ -23,33 +24,13 @@ export default function ProfilePage() {
   const [name, setName] = useState("Ye")
   const [tempName, setTempName] = useState("")
   const userId = useAppSelector((state) => state.user.user?.userId);
-
-  useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        if(userId){
-          const current=await getUserById(userId)
-          setName(current.username)
-          setImageSrc(current.profileUrl)
-        }
-        else{
-          console.log('no userId')
-        }
-      } catch (err) {
-        console.error(err)
-      } finally {
-        //setLoading(false)
-      }
-    }
-
-    fetchProfile()
-  }, [])
+  const dispatch = useAppDispatch();
 
   const handleSaveName = async () => {
     setName(tempName)
     setEditingName(false)
-    if(userId){
-      await updateProfile({userId:userId,username:tempName,profileUrl:null})
+    if (userId) {
+      await updateProfile({ userId: userId, username: tempName, profileUrl: null })
     }
   }
 
@@ -65,8 +46,9 @@ export default function ProfilePage() {
       setUploading(true)
       console.log('pic changed')
       console.log(imgUrl)
-      if(userId){
-        await updateProfile({userId:userId,username:null,profileUrl:imgUrl})
+      if (userId) {
+        await updateProfile({ userId: userId, username: null, profileUrl: imgUrl })
+
       }
     } catch (err) {
       console.error(err)
@@ -74,6 +56,27 @@ export default function ProfilePage() {
       setUploading(false)
     }
   }
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        if (userId) {
+          const current = await getUserById(userId)
+          setName(current.username)
+          setImageSrc(current.profileUrl)
+          dispatch(setUser(current))
+        }
+        else {
+          console.log('no userId')
+        }
+      } catch (err) {
+        console.error(err)
+      } finally {
+        //setLoading(false)
+      }
+    }
+
+    fetchProfile()
+  }, [uploading, editingName])
   return (
     <div className='flex flex-row justify-center'>
       <div className="grow max-w-2xl flex flex-col items-center justify-start bg-slate-300 p-4 pt-12 rounded-2xl shadow-lg">
@@ -82,7 +85,7 @@ export default function ProfilePage() {
         <div className="relative group w-40 h-40">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src={imageSrc}
+            src={imageSrc === "" ? '/avatar.png' : imageSrc}
             alt="Profile"
             className="w-full h-full object-cover rounded-full border-4 border-white shadow-md"
           />

@@ -8,10 +8,11 @@ import NavLinks from "./nav-links";
 import Link from "next/link";
 import { UserAccountIcon } from "hugeicons-react";
 import Image from "next/image";
+import { useAppSelector } from "@/states/hook";
 
 export default function TopNav() {
 
-    // const userId = useAppSelector((state) => state.user.user!.userId);
+    const userProfileUrl = useAppSelector((state) => state.user.user!.profileUrl);
     const router = useRouter();
 
     const logout = async () => {
@@ -43,7 +44,7 @@ export default function TopNav() {
                                 width={20}
                                 height={20}
                                 alt="Tailwind CSS Navbar component"
-                                src="/avatar.png" />
+                                src={(userProfileUrl === "") ? "/avatar.png" : userProfileUrl} />
                         </div>
                     </div>
                     <ul
