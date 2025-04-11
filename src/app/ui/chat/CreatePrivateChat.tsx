@@ -9,10 +9,14 @@ type User = {
     email: string;
     profileUrl: string | "/avatar.png";
 };
+interface createChatProp {
+    closeModal?: () => void;
+};
 
-export default function CreatePrivateChat() {
+export default function CreatePrivateChat({ closeModal }: createChatProp) {
     const userId = useAppSelector(state => state.user.user!.userId);
     const [users, setUsers] = useState<User[] | null>(null);
+    const [error, setError] = useState(false);
 
     useEffect(() => {
         const fetchAllUsers = async () => {
@@ -33,6 +37,7 @@ export default function CreatePrivateChat() {
 
     const handleCreateChat = async () => {
         if (!selectedUserId) {
+            setError(true)
             console.log("No user selected.");
             return;
         }
@@ -43,6 +48,9 @@ export default function CreatePrivateChat() {
                 isGroup: false,
                 groupName: "",
             });
+            setError(false)
+            if (closeModal)
+                closeModal();
         } catch (error) {
             console.error("Error creating chat room:", error);
         }
@@ -72,6 +80,7 @@ export default function CreatePrivateChat() {
                     </li>
                 ))}
             </ul>
+            {error && <div className="text-error">You must select a user to start chat with.</div>}
             <button
                 onClick={handleCreateChat}
                 className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"

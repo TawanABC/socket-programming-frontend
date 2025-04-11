@@ -6,6 +6,8 @@ import { getUserById } from '@/services/userService';
 import { io } from "socket.io-client";
 import { setActiveRoom } from '@/states/features/chatSlice';
 import { getChatRoomDetails } from '@/services/chatService';
+import { Ellipsis } from 'lucide-react';
+import GroupMembers from './GroupMembers';
 
 const socket = io(process.env.SERVER_ADDRESS);
 
@@ -33,7 +35,7 @@ export default function ChatRoom() {
     if (containerRef.current) {
         containerRef.current.scrollTop = containerRef.current.scrollHeight;
     }
-    
+
     useEffect(() => {
         const fetchOtherUsername = async () => {
             if (!isChatGroup && activeChatRoom) {
@@ -100,26 +102,34 @@ export default function ChatRoom() {
         return () => clearTimeout(timer); // Clean up the timer when the component unmounts or re-runs
     }, [buttonClicked]);
 
-    return (
+    return (<>
+
         <div className='max-h-[500px] h-[500px] border border-gray-300 flex flex-col'>
-            <div className='flex items-center gap-2 bg-gray-600 text-white px-3 py-2 w-full'>
+            <div className='flex items-center gap-2 bg-gray-600 text-white px-3 py-2 w-full justify-between'>
 
                 <span className='font-semibold'>{chatName}</span>
+                {isChatGroup && <Ellipsis className='hover:bg-gray-700 rounded-sm'
+                    onClick={() => (document.getElementById('groupMembers') as HTMLDialogElement)?.showModal()}
+                />}
             </div>
             {/* Message container */}
             <div
                 ref={containerRef}
                 className="flex-1 overflow-y-auto overflow-x-hidden scrollbar-hidden mt-1 px-2"
             >
-                {activeChatRoom?.messages.map((message) => (
-                    <ChatMessage message={message} key={message.messageId} />
-                ))}
+                {activeChatRoom?.messages
+                    .slice()
+                    .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
+                    .map((message) => (
+                        <ChatMessage message={message} key={message.messageId} />
+                    ))}
             </div>
             {activeChatRoom &&
                 <div className='flex flex-row justify-end p-2 space-x-1 shadow-2xl'>  <div className='grow'><ChatInput onButtonClick={handleChatInputButtonClick} /></div> </div>
             }
-
-
         </div>
+        <GroupMembers modalId='groupMembers' members={userIds} />
+    </>
+
     )
 }

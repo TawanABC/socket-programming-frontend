@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import ChatItem from './ChatItem'
 import { ChatRoom } from '@/common/model';
 import { PlusIcon } from 'lucide-react';
@@ -9,6 +9,10 @@ import { getUserChatRooms } from '@/services/chatService';
 
 
 export default function ChatList() {
+    const [chatCreatedTrigger, setChatCreatedTrigger] = useState(true);
+    const handlesetChatCreatedTrigger = () => {
+        setChatCreatedTrigger(prev => !prev);
+    };
 
     const userId = useAppSelector(state => state.user.user!.userId);
     const chatRooms = useAppSelector(state => state.chat.chatRooms);
@@ -22,7 +26,7 @@ export default function ChatList() {
 
     useEffect(() => {
         const fetchChatRooms = async () => {
-            // console.log("fetching...");
+            console.log("fetching...");
             try {
                 const chatRooms = await getUserChatRooms();
                 dispatch(setChatRooms(chatRooms));
@@ -32,7 +36,7 @@ export default function ChatList() {
         };
         // console.log("chat list", chatRooms);
         fetchChatRooms();
-    }, []);
+    }, [chatCreatedTrigger, dispatch]);
 
 
     const openModal = (modalId: string) => {
@@ -42,20 +46,23 @@ export default function ChatList() {
         )?.showModal();
     }
     return (<>
-        <div className='w-[300px] bg-slate-50 p-3 overflow-y-auto'>
-            <div className='flex flex-row items-center justify-between'>
+        <div>
+            <div className='p-3 flex flex-row justify-between'>
                 <h2 className='text-xl font-bold'>Chats</h2>
                 <button type="button" className='hover:bg-slate-200 hover:cursor-pointer p-1 rounded-md'
                     onClick={() => openModal('createChatModal')}>
                     <PlusIcon />
                 </button>
             </div>
-            {chatRooms.map(chatRoom => (
-                <ChatItem chatRoom={chatRoom} key={`chat-item-${chatRoom.chatRoomId}`} />
-            ))}
-        </div>
 
-        <CreateChatModal modalId='createChatModal' />
+            <div className='w-[300px] bg-slate-50 p-3 max-h-[500px] h-[440] overflow-y-auto overflow-x-hidden'>
+
+                {chatRooms.map(chatRoom => (
+                    <ChatItem chatRoom={chatRoom} key={`chat-item-${chatRoom.chatRoomId}`} />
+                ))}
+            </div>
+        </div>
+        <CreateChatModal modalId='createChatModal' chatCreatedTrigger={handlesetChatCreatedTrigger} />
     </>
 
     )
