@@ -43,6 +43,7 @@ export default function LoginForm() {
                 dispatch(login(token));
                 dispatch(setUser(user));
                 actions.resetForm();
+                await new Promise(resolve => setTimeout(resolve, 500));
                 router.push("/home");
             }
         } catch (err) {

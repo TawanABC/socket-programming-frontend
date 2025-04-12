@@ -27,7 +27,6 @@ export default function ChatGroupJoin({ closeModal }: groupJoinProps) {
                 setChatGroups(unJoinedGroups);
             } catch (error) {
                 console.error("Error fetching group chats:", error);
-                setError(true);
             }
         };
         fetchAllExistingGroup();
