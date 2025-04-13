@@ -69,6 +69,26 @@ export const loginService = async (loginData: loginSchema) => {
 
 }
 
+export const logOutService = async () => {
+
+    try {
+
+        const options = {
+            method: "POST",
+            url: `${serverAddr}/auth/logout`,
+            withCredentials: true,
+        }
+
+        await axios.request(options);
+
+        return;
+
+    } catch (err) {
+        throw err;
+    }
+
+}
+
 
 export const getUserById = async (userId: string) => {
     // console.log('get by id', userId);

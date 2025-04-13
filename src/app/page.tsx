@@ -7,12 +7,13 @@ import { useAppDispatch } from "@/states/hook";
 // import { clearAuthToken } from "@/service/authService";
 import { resetState } from "@/states/store";
 import { useEffect } from "react";
+import { logOutService } from "@/services/userService";
 
 export default function Home() {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    // clearAuthToken();
+    logOutService()
     dispatch(resetState());
   }, []);
 
