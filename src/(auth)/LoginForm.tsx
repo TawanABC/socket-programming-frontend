@@ -10,6 +10,7 @@ import { loginService } from '@/services/userService';
 import { login } from '@/states/features/authSlices';
 import { setUser } from '@/states/features/userSlice';
 import { useRouter } from "next/navigation";
+import { socket } from '@/utils/instances';
 
 export default function LoginForm() {
     type formSchema = yup.InferType<typeof loginSchema>;
@@ -45,6 +46,7 @@ export default function LoginForm() {
                 dispatch(setUser(user));
                 actions.resetForm();
                 router.push("/home");
+                socket.connect()
             }
         } catch (err) {
             console.error(err);

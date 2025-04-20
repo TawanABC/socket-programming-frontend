@@ -3,6 +3,7 @@
 import React from 'react'
 import ChatRoom from '../ui/chat/Chatroom'
 import ChatList from '../ui/chat/ChatList'
+import OnlineUsers from '../ui/OnlineUsers'
 
 export default function HomePage() {
   return (
@@ -11,6 +12,9 @@ export default function HomePage() {
       <ChatList />
       <div className='flex-1'>
         <ChatRoom />
+      </div>
+      <div className='flex-1'>
+        <OnlineUsers />
       </div>
     </div>
   )

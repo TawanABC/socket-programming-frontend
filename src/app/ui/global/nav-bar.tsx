@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useAppDispatch, useAppSelector } from "@/states/hook";
 import { setActiveRoom } from "@/states/features/chatSlice";
+import { socket } from "@/utils/instances";
 
 export default function TopNav() {
 
@@ -14,6 +15,7 @@ export default function TopNav() {
     const logout = async () => {
 
         try {
+            socket.disconnect();
             router.push("/");
         } catch (err) {
             console.error(err);
