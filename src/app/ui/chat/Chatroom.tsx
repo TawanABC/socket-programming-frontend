@@ -1,3 +1,7 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
+
 import React, { useEffect, useRef, useState } from 'react'
 import ChatMessage from './ChatMessage'
 import { useAppDispatch, useAppSelector } from '@/states/hook';
@@ -8,6 +12,7 @@ import { setActiveRoom } from '@/states/features/chatSlice';
 import { getChatRoomDetails } from '@/services/chatService';
 import { Ellipsis } from 'lucide-react';
 import GroupMembers from './GroupMembers';
+import { Message } from '@/common/model';
 
 const socket = io(process.env.SERVER_ADDRESS);
 
@@ -17,7 +22,6 @@ export default function ChatRoom() {
     const dispatch = useAppDispatch();
     const loggedInUserId = useAppSelector(state => state.user.user?.userId);
     const activeChatRoom = useAppSelector(state => state.chat.activeRoom);
-    const activeRoomId = activeChatRoom?.chatRoomId
 
 
     const userId = useAppSelector(state => state.user.user!.userId);
@@ -25,21 +29,17 @@ export default function ChatRoom() {
     const userIds = activeChatRoom?.users
 
     const [otherUsername, setOtherUsername] = useState<string>('')
-
-    const [buttonClicked, setButtonClicked] = useState(false);
-    const handleChatInputButtonClick = () => {
-        setButtonClicked(prev => !prev);
-    };
+    const [latestMessage, setLatestMessage] = useState<Message | null>(null)
 
     //go directly to most rececnt message upon opening
-    if (containerRef.current) {
-        containerRef.current.scrollTop = containerRef.current.scrollHeight;
-    }
+    // if (containerRef.current) {
+    //     containerRef.current.scrollTop = containerRef.current.scrollHeight;
+    // }
 
     useEffect(() => {
         const fetchOtherUsername = async () => {
             if (!isChatGroup && activeChatRoom) {
-                const otherUserId = userIds.find((otherId) => otherId.userId !== userId).userId
+                const otherUserId = userIds?.find((otherId) => otherId.userId !== userId)?.userId
                 if (otherUserId) {
                     try {
                         const userData = await getUserById(otherUserId)
@@ -61,8 +61,10 @@ export default function ChatRoom() {
 
     useEffect(() => {
         const fetchMessageChatroom = async () => {
-            if (activeRoomId !== undefined) {
-                const chatRoomDetails = await getChatRoomDetails(activeRoomId);
+            console.log("fetch message chatroom");
+            if (activeChatRoom?.chatRoomId !== undefined) {
+                const chatRoomDetails = await getChatRoomDetails(activeChatRoom?.chatRoomId);
+                console.log("fetch chatroom");
                 dispatch(setActiveRoom(chatRoomDetails))
             }
         };
@@ -70,18 +72,32 @@ export default function ChatRoom() {
 
         socket.emit("joinRoom", {
             senderId: loggedInUserId,
-            chatRoomId: activeRoomId,
+            chatRoomId: activeChatRoom?.chatRoomId,
         });
 
         socket.on("receiveMessage", ({ newMessage }) => {
-            // const { commission, ...rest } = newMessage;
-            // console.log("socket", newMessage);
-            fetchMessageChatroom()
+            console.log("new fetch");
+            setLatestMessage(newMessage);
+            fetchMessageChatroom();
+        });
+
+        socket.on("updateMessage", ({ updatedMessage }) => {
+            fetchMessageChatroom();
+            // setLatestMessage(updatedMessage);
+            console.log("updateMessage fetch");
+        });
+
+        socket.on("unsendMessage", ({ unsentMessage }) => {
+            fetchMessageChatroom();
+            // setLatestMessage(unsentMessage);
+            console.log("unsendMessage fetch");
         });
 
 
         return () => {
             socket.off("receiveMessage");
+            socket.off("updateMessage");
+            socket.off("unsendMessage");
         };
 
     }, [loggedInUserId, activeChatRoom]);
@@ -89,18 +105,19 @@ export default function ChatRoom() {
 
 
     const chatName = isChatGroup
-        ? `${activeChatRoom.groupName} (${userIds.length})`
+        ? `${activeChatRoom.groupName} (${userIds ? userIds.length : ""})`
         : otherUsername || 'Please Select ChatRoom'
 
     useEffect(() => {
         const timer = setTimeout(() => {
-            if (containerRef.current) {
+            const isScrollDown = (latestMessage?.senderId === userId)
+            if (containerRef.current && isScrollDown) {
                 containerRef.current.scrollTop = containerRef.current.scrollHeight;
             }
-        }, 50); // 200ms delay
+        }, 50); // 50ms delay
+        return () => clearTimeout(timer);
+    }, [latestMessage]); // Scroll whenever messages change
 
-        return () => clearTimeout(timer); // Clean up the timer when the component unmounts or re-runs
-    }, [buttonClicked]);
 
     return (<>
 
@@ -125,7 +142,7 @@ export default function ChatRoom() {
                     ))}
             </div>
             {activeChatRoom &&
-                <div className='flex flex-row justify-end p-2 space-x-1 shadow-2xl'>  <div className='grow'><ChatInput onButtonClick={handleChatInputButtonClick} /></div> </div>
+                <div className='flex flex-row justify-end p-2 space-x-1 shadow-2xl'>  <div className='grow'><ChatInput /></div> </div>
             }
         </div>
         <GroupMembers modalId='groupMembers' members={userIds} />

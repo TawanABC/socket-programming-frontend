@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import ChatItem from './ChatItem'
-import { ChatRoom } from '@/common/model';
 import { PlusIcon } from 'lucide-react';
 import CreateChatModal from './CreateChatModal';
 import { useAppSelector, useAppDispatch } from '@/states/hook';
@@ -14,15 +13,8 @@ export default function ChatList() {
         setChatCreatedTrigger(prev => !prev);
     };
 
-    const userId = useAppSelector(state => state.user.user!.userId);
     const chatRooms = useAppSelector(state => state.chat.chatRooms);
     const dispatch = useAppDispatch();
-    const activeRoomId = useAppSelector(state => {
-        if (state.chat.activeRoom) {
-            return state.chat.activeRoom.chatRoomId;
-        }
-        return null;
-    });
 
     useEffect(() => {
         const fetchChatRooms = async () => {
@@ -34,7 +26,6 @@ export default function ChatList() {
                 console.error("Failed to fetch chat rooms:", error);
             }
         };
-        // console.log("chat list", chatRooms);
         fetchChatRooms();
     }, [chatCreatedTrigger, dispatch]);
 

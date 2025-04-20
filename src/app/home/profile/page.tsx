@@ -1,3 +1,5 @@
+/* eslint-disable @next/next/no-img-element */
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 import { useEffect, useState } from 'react'
 import { Pencil } from 'lucide-react'
@@ -83,7 +85,6 @@ export default function ProfilePage() {
         <h2 className="text-2xl font-bold mb-8">Your Profile</h2>
 
         <div className="relative group w-40 h-40">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={imageSrc === "" ? '/avatar.png' : imageSrc}
             alt="Profile"

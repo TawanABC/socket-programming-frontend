@@ -49,7 +49,8 @@ export default function CreateGroupChat({ closeModal }: createChatProp) {
   const handleCreateGroupChat = async () => {
     const selectedUsers = users?.filter((user) =>
       selectedUserIds?.includes(user.userId)
-    );
+    ) || [];
+
 
     if (!groupName.trim()) {
       setError(true);

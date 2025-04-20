@@ -1,14 +1,13 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { createMessage } from '@/services/chatService';
 import { useAppSelector } from '@/states/hook';
 import { SendIcon } from 'lucide-react';
 import React, { useState } from 'react';
 
-type ChatInputProps = {
-    onButtonClick?: () => void;
-};
 
 
-export default function ChatInput({ onButtonClick }: ChatInputProps) {
+
+export default function ChatInput() {
 
     const activeChatRoomId = useAppSelector(state => {
         if (state.chat.activeRoom) {
@@ -27,7 +26,6 @@ export default function ChatInput({ onButtonClick }: ChatInputProps) {
             })
             // console.log(response);
             setMessage("")
-            if (onButtonClick) onButtonClick();
         } catch (error) {
             console.log("send message error", error);
         }

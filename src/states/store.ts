@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // Import reducers
 import { configureStore, combineReducers, createAction } from '@reduxjs/toolkit';
 import {

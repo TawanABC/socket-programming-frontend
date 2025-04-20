@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { loginSchema } from '@/common/schemas';
 import * as yup from "yup";
 import React, { useState } from 'react'
@@ -61,7 +62,7 @@ export default function LoginForm() {
                     validationSchema={loginSchema}
                     onSubmit={handleSubmit as any}
                 >
-                    {({ isSubmitting, errors, touched, setFieldValue }) => (
+                    {({ isSubmitting, errors, touched }) => (
                         <Form className="space-y-4" autoComplete="off">
                             <div>
                                 <label className="mb-2 block text-sm font-bold text-gray-700">

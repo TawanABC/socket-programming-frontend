@@ -1,7 +1,6 @@
 import { ChatRoom } from '@/common/model';
 import { addUserToChatRoom, getAllGroupChatRooms, getUserChatRooms } from '@/services/chatService';
 import { useAppSelector } from '@/states/hook';
-import { join } from 'path';
 import React, { useEffect, useState } from 'react';
 
 interface groupJoinProps {
@@ -22,7 +21,7 @@ export default function ChatGroupJoin({ closeModal }: groupJoinProps) {
                 const chatRooms = await getUserChatRooms()
                 const unJoinedGroups = allGroups.filter(
                     (group: ChatRoom) =>
-                        !chatRooms.some(room => room.chatRoomId === group.chatRoomId)
+                        !chatRooms.some((room: { chatRoomId: string; }) => room.chatRoomId === group.chatRoomId)
                 );
                 setChatGroups(unJoinedGroups);
             } catch (error) {

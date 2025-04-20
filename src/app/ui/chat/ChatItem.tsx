@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { ChatRoom, User } from '@/common/model'
 import { getChatRoomDetails } from '@/services/chatService';
 import { getUserById } from '@/services/userService';
@@ -10,13 +11,12 @@ export default function ChatItem({ chatRoom }: { chatRoom: ChatRoom }) {
 
     const userId = useAppSelector(state => state.user.user!.userId);
     const isChatGroup = chatRoom.isGroup
-    const userIds = chatRoom.users
+    const users = chatRoom.users
     const [otherUsername, setOtherUsername] = useState<string>('')
     const [otherUser, setOtherUser] = useState<User | null>(null);
     const otherUserUrl = (!otherUser || otherUser?.profileUrl === "") ? 'avatar.png' : otherUser?.profileUrl
     const chatIcon = isChatGroup ? "/group_chat.png" : otherUserUrl
     const handleSetActiveRoom = async () => {
-        // dispatch(setActiveRoom(chatRoom))
         const chatRoomDetails = await getChatRoomDetails(chatRoom.chatRoomId);
         dispatch(setActiveRoom(chatRoomDetails))
     }
@@ -26,7 +26,8 @@ export default function ChatItem({ chatRoom }: { chatRoom: ChatRoom }) {
     useEffect(() => {
         const fetchOtherUsername = async () => {
             if (!isChatGroup) {
-                const otherUserId = userIds.find((otherId) => otherId.userId !== userId).userId
+                const other = users.find((otherUser) => otherUser.userId !== userId)
+                const otherUserId = other?.userId
                 if (otherUserId) {
                     try {
                         const userData = await getUserById(otherUserId)
@@ -44,7 +45,7 @@ export default function ChatItem({ chatRoom }: { chatRoom: ChatRoom }) {
         fetchOtherUsername()
     }, [])
     const chatName = isChatGroup
-        ? `${chatRoom.groupName} (${userIds.length})`
+        ? `${chatRoom.groupName} (${users.length})`
         : otherUsername || 'Loading...'
     return (
         <div

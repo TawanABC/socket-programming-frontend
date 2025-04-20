@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { signUpSchema } from '@/common/schemas';
 import * as yup from "yup";
 import React, { useState } from 'react'
@@ -5,15 +7,11 @@ import { ErrorMessage, Field, Form, Formik, FormikHelpers } from 'formik';
 import Link from 'next/link';
 import { FaEyeSlash, FaEye } from 'react-icons/fa';
 import { useRouter } from 'next/navigation';
-import { useAppDispatch } from '@/states/hook';
 import { register } from '@/services/userService';
 import { User } from '@/common/model';
-import { login } from '@/states/features/authSlices';
-import { setUser } from '@/states/features/userSlice';
 
 export default function SignUpForm() {
     const router = useRouter();
-    const dispatch = useAppDispatch();
 
 
     type formSchema = yup.InferType<typeof signUpSchema>;
@@ -61,7 +59,7 @@ export default function SignUpForm() {
                     validationSchema={signUpSchema}
                     onSubmit={handleSubmit as any}
                 >
-                    {({ isSubmitting, errors, touched, setFieldValue }) => (
+                    {({ isSubmitting, errors, touched }) => (
                         <Form className="space-y-4" autoComplete="off">
                             <div>
                                 <label className="mb-2 block text-sm font-bold text-gray-700">
