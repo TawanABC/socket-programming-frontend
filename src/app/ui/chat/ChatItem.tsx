@@ -16,7 +16,7 @@ export default function ChatItem({ chatRoom }: { chatRoom: ChatRoom }) {
     const otherUserUrl = (!otherUser || otherUser?.profileUrl === "") ? 'avatar.png' : otherUser?.profileUrl
     const chatIcon = isChatGroup ? "/group_chat.png" : otherUserUrl
     const handleSetActiveRoom = async () => {
-        dispatch(setActiveRoom(chatRoom))
+        // dispatch(setActiveRoom(chatRoom))
         const chatRoomDetails = await getChatRoomDetails(chatRoom.chatRoomId);
         dispatch(setActiveRoom(chatRoomDetails))
     }

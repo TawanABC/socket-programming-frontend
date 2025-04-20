@@ -22,7 +22,7 @@ const chatSlice = createSlice({
         setChatRooms(state, action: PayloadAction<Array<ChatRoom>>) {
             state.chatRooms = action.payload;
         },
-        setActiveRoom(state, action: PayloadAction<ChatRoom>) {
+        setActiveRoom(state, action: PayloadAction<ChatRoom | null>) {
             state.activeRoom = action.payload;
         },
         setMessages(state, action: PayloadAction<Array<Message>>) {

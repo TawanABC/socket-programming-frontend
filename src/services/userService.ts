@@ -101,7 +101,7 @@ export const getUserById = async (userId: string) => {
         };
         const { data } = await axios.request(options);
         const user = data.data
-        console.log("get user by id", user);
+        // console.log("get user by id", user);
         return user;
     } catch (error) {
         throw error;

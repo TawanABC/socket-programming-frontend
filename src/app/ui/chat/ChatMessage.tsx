@@ -28,9 +28,11 @@ export default function ChatMessage({ message }: messageProps) {
     const formattedDate = new Intl.DateTimeFormat('en-GB', options).format(createDate);
     const senderProfileUrl = sender?.profileUrl
     const handleRightClick = (event: React.MouseEvent) => {
-        console.log(message);
-        event.preventDefault();
-        (document.getElementById(`msg-modal-${message.messageId}`) as HTMLDialogElement)?.showModal();
+        if (isMyMessage) {
+            console.log(message);
+            event.preventDefault();
+            (document.getElementById(`msg-modal-${message.messageId}`) as HTMLDialogElement)?.showModal();
+        }
     };
     const handleUnsend = async () => {
         try {
