@@ -1,15 +1,18 @@
 import { User } from '@/common/model';
 import { getUserById } from '@/services/userService';
-import { useAppDispatch, useAppSelector } from '@/states/hook';
+import { useAppSelector } from '@/states/hook';
 import { socket } from '@/utils/instances';
 import React, { useEffect, useState } from 'react'
 
-
+type ClientInfo = {
+    socketId: string;
+    userId: string;
+};
 
 
 export default function OnlineUsers() {
     const loggedInUserId = useAppSelector(state => state.user.user?.userId);
-    const [clientList, setClientList] = useState([]);
+    // const [clientList, setClientList] = useState([]);
     const [OnlineUsers, setOnlineUsers] = useState<User[] | null>(null)
     useEffect(() => {
         if (loggedInUserId) {
@@ -18,16 +21,16 @@ export default function OnlineUsers() {
 
         socket.on("clientList", async (clients) => {
             console.log("Online clients:", clients);
-            // optionally update local state to show online users in UI
-            setClientList(clients); // You'd need to useState for clientList
-            const uniqueUserIds = Array.from(new Set(clients.map((c: { userId: string; }) => c.userId)));
+            const typedClients = clients as ClientInfo[];
+
+            const uniqueUserIds = Array.from(new Set(typedClients.map(c => c.userId)));
 
             const users: User[] = await Promise.all(
                 uniqueUserIds.map(async (userId) => {
                     try {
                         return await getUserById(userId);
                     } catch (error) {
-                        console.warn(`Failed to fetch user ${userId}`);
+                        console.warn(`Failed to fetch user ${userId} with error ${error}`);
                         return null;
                     }
                 })
