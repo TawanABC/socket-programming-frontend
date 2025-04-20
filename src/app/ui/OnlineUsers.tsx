@@ -46,7 +46,7 @@ export default function OnlineUsers() {
 
     console.log(OnlineUsers);
     return (
-        <div className='p-2 max-w-2xl'>
+        <div className='p-2 min-w-lg'>
             <h1 className='font-bold text-lg'>Online users</h1>
             <div className='max-h-[500px] h-[440] overflow-y-auto overflow-x-hidden'>
                 {OnlineUsers &&
