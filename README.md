@@ -16,6 +16,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 
 ## About this repository
-This is a Socket Programming Term Project of 2110471 Computer Networks I, Computer Engineering, Chulalongkorn University
+This repository contains the Socket Programming Term Project for 
+2110471 Computer Networks I, Computer Engineering, Chulalongkorn University
 
 
